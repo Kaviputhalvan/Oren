@@ -3,7 +3,7 @@
 
     <item>
         <bitmap
-            android:src="@drawable/bg_d"
+            android:src="@drawable/bg"
             android:gravity="fill" />
     </item>
 
