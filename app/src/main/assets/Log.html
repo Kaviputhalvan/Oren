@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width,initial-scale=1">
+
+<title>Oren Logger V1</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+html,body{
+    margin:0;
+    padding:0;
+    width:100%;
+    height:100%;
+    background:#080c11;
+    color:#e8edf2;
+    font-family:monospace;
+}
+
+body{
+    overflow:auto;
+}
+
+header{
+    position:sticky;
+    top:0;
+    z-index:10;
+    background:#0d131a;
+    border-bottom:1px solid #273340;
+    padding:8px;
+}
+
+pre{
+    margin:0;
+    color:#75b9ff;
+    font-size:10px;
+    line-height:1.2;
+    white-space:pre;
+    overflow:hidden;
+}
+
+h1{
+    margin:5px 0 1px;
+    font-size:16px;
+}
+
+.info{
+    color:#7f8b98;
+    font-size:9px;
+}
+
+.tools{
+    display:flex;
+    flex-wrap:wrap;
+    gap:4px;
+    margin-top:7px;
+}
+
+button,
+select,
+input{
+    height:29px;
+    background:#121a23;
+    color:#e8edf2;
+    border:1px solid #2a3846;
+    border-radius:4px;
+    padding:0 7px;
+    font:10px monospace;
+}
+
+input{
+    flex:1;
+    min-width:80px;
+}
+
+#lastCount{
+    flex:0 0 55px;
+    min-width:55px;
+    width:55px;
+    text-align:center;
+}
+
+#logger{
+    width:100%;
+    padding-bottom:30px;
+}
+
+.line{
+    display:flex;
+    width:100%;
+    height:23px;
+    min-height:23px;
+    border-bottom:1px solid #151d25;
+}
+
+.line.selected{
+    background:#214568;
+}
+
+.num{
+    width:36px;
+    min-width:36px;
+    height:23px;
+
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+
+    padding-right:5px;
+
+    color:#596675;
+
+    border-right:1px solid #273340;
+
+    font-size:8px;
+
+    user-select:none;
+    -webkit-user-select:none;
+}
+
+.content{
+    flex:1;
+    min-width:0;
+
+    height:23px;
+
+    padding:4px 6px;
+
+    line-height:15px;
+    font-size:11px;
+
+    white-space:nowrap;
+
+    overflow-x:auto;
+    overflow-y:hidden;
+
+    scrollbar-width:none;
+
+    user-select:text;
+    -webkit-user-select:text;
+}
+
+.content::-webkit-scrollbar{
+    display:none;
+}
+
+.tag{
+    display:inline-block;
+
+    width:34px;
+    min-width:34px;
+
+    height:14px;
+
+    line-height:14px;
+
+    margin-right:4px;
+
+    text-align:center;
+
+    border-radius:2px;
+
+    font-size:7px;
+    font-weight:bold;
+
+    vertical-align:middle;
+
+    user-select:none;
+}
+
+.time{
+    color:#65717e;
+    font-size:8px;
+    margin-right:3px;
+}
+
+.source{
+    color:#71808f;
+    font-size:8px;
+    margin-right:4px;
+}
+
+.WARNING{
+    background:#ffc857;
+    color:#18120a;
+}
+
+.ERROR{
+    background:#ff5260;
+    color:white;
+}
+
+.OK{
+    background:#35d477;
+    color:#06150d;
+}
+
+.INFO{
+    background:#55a7ff;
+    color:#06111f;
+}
+
+.CFG{
+    background:#b978ff;
+    color:white;
+}
+
+.TRY{
+    background:#00c5b4;
+    color:#001514;
+}
+
+.PATH{
+    background:#ff9f43;
+    color:#1b1004;
+}
+
+.LINK{
+    background:#4da6ff;
+    color:#03101e;
+}
+
+.path{
+    color:#ffad54;
+}
+
+a{
+    color:#55aaff;
+}
+
+#status{
+    position:fixed;
+    left:8px;
+    right:8px;
+    bottom:8px;
+
+    display:none;
+
+    padding:7px;
+
+    background:#17212c;
+    border:1px solid #334353;
+    border-radius:5px;
+
+    font-size:10px;
+    text-align:center;
+
+    z-index:100;
+}
+
+@media(min-width:600px){
+
+    .content{
+        font-size:12px;
+    }
+
+    .num{
+        width:45px;
+        min-width:45px;
+    }
+
+    .tag{
+        width:38px;
+        min-width:38px;
+        font-size:8px;
+    }
+}
+
+@media(min-width:1000px){
+
+    header{
+        padding:12px 16px;
+    }
+
+    h1{
+        font-size:18px;
+    }
+
+    .content{
+        font-size:13px;
+    }
+
+    .num{
+        width:55px;
+        min-width:55px;
+    }
+
+    .tag{
+        width:42px;
+        min-width:42px;
+        font-size:8px;
+    }
+}
+
+@media(max-width:380px){
+
+    .content{
+        font-size:10px;
+    }
+
+    .num{
+        width:31px;
+        min-width:31px;
+        font-size:7px;
+    }
+
+    .tag{
+        width:29px;
+        min-width:29px;
+        font-size:6px;
+    }
+
+    .time,
+    .source{
+        display:none;
+    }
+
+    #lastCount{
+        flex-basis:45px;
+        min-width:45px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+<pre>
+┌──────────────────────────────────────┐
+│ OREN LOGGER V1                       │
+│ Android HTML Runtime Logger          │
+│ PKG : apk.oren                      │
+│ DATA: /data/oren.log                 │
+│ VIEW: /data/Log.html                 │
+└──────────────────────────────────────┘
+</pre>
+
+<h1>Oren Logger V1</h1>
+
+<div class="info">
+apk.oren • persistent Java service logger
+</div>
+
+<div class="tools">
+
+<button onclick="copySelected()">
+COPY SELECTED
+</button>
+
+<button onclick="copyLast()">
+COPY LAST
+</button>
+
+<input
+    id="lastCount"
+    type="number"
+    min="1"
+    value="0"
+    title="Number of last lines">
+
+<button onclick="copyAll()">
+COPY ALL
+</button>
+
+<button onclick="selectLast()">
+SELECT LAST
+</button>
+
+
+<button onclick="reloadLog()">
+RELOAD
+</button>
+
+<button onclick="bottom()">
+BOTTOM
+</button>
+
+<select id="filter"
+        onchange="draw()">
+
+<option value="ALL">ALL</option>
+<option>WARNING</option>
+<option>ERROR</option>
+<option>OK</option>
+<option>INFO</option>
+<option>CFG</option>
+<option>TRY</option>
+<option>PATH</option>
+<option>LINK</option>
+
+</select>
+
+<input
+    id="search"
+    placeholder="search"
+    oninput="draw()">
+
+</div>
+
+</header>
+
+<div id="logger"></div>
+
+<div id="status"></div>
+
+<script>
+
+"use strict";
+
+const LOG_FILE="oren.log";
+
+let logs=[];
+
+let selected=new Set();
+
+
+function esc(v){
+
+    return String(v)
+
+        .replace(/&/g,"&amp;")
+
+        .replace(/</g,"&lt;")
+
+        .replace(/>/g,"&gt;")
+
+        .replace(/"/g,"&quot;")
+
+        .replace(/'/g,"&#39;");
+}
+
+
+function parseLog(line){
+
+    const p=[];
+
+    let current="";
+    let escaped=false;
+
+    for(let i=0;i<line.length;i++){
+
+        const c=line[i];
+
+        if(escaped){
+
+            if(c==="n")
+                current+="\n";
+
+            else if(c==="r")
+                current+="\r";
+
+            else
+                current+=c;
+
+            escaped=false;
+
+        }else if(c==="\\"){
+
+            escaped=true;
+
+        }else if(c==="|"){
+
+            p.push(current);
+            current="";
+
+        }else{
+
+            current+=c;
+        }
+    }
+
+    p.push(current);
+
+    if(p.length<5)
+        return null;
+
+    return [
+        p[2],
+        p[1],
+        p[3],
+        p.slice(4).join("|"),
+        parseInt(p[0],10)
+    ];
+}
+
+
+function loadLog(){
+
+    /*
+     * Normal browser:
+     * fetch("oren.log")
+     *
+     * Android WebView:
+     * Android.readLog()
+     */
+
+    if(
+        window.Android &&
+        typeof Android.readLog==="function"
+    ){
+
+        try{
+
+            const data=Android.readLog();
+
+            parseData(data);
+
+        }catch(e){
+
+            status("READ ERROR");
+
+        }
+
+        return;
+    }
+
+
+    fetch(LOG_FILE+"?t="+Date.now())
+
+        .then(r=>{
+
+            if(!r.ok)
+                throw new Error("read");
+
+            return r.text();
+
+        })
+
+        .then(data=>{
+
+            parseData(data);
+
+        })
+
+        .catch(()=>{
+
+            status("oren.log NOT FOUND");
+
+            logs=[];
+
+            draw();
+
+        });
+}
+
+
+function parseData(data){
+
+    logs=[];
+
+    const lines=
+
+        String(data)
+            .split(/\r?\n/);
+
+
+    for(const line of lines){
+
+        if(!line.trim())
+            continue;
+
+        const x=parseLog(line);
+
+        if(x)
+            logs.push(x);
+
+    }
+
+    draw();
+}
+
+
+function clickable(text){
+
+    let s=esc(text);
+
+
+    s=s.replace(
+
+        /(https?:\/\/[^\s]+)/g,
+
+        '<a href="$1" target="_blank">$1</a>'
+
+    );
+
+
+    if(
+
+        text.startsWith("/") ||
+
+        text.startsWith("./") ||
+
+        text.startsWith("../")
+
+    ){
+
+        s=
+
+        '<span class="path">'+
+
+        s+
+
+        '</span>';
+
+    }
+
+
+    return s;
+}
+
+
+function draw(){
+
+    const filter=
+
+        document.getElementById("filter").value;
+
+
+    const search=
+
+        document.getElementById("search").value
+
+        .toLowerCase();
+
+
+    let html="";
+
+
+    for(let i=0;i<logs.length;i++){
+
+        const x=logs[i];
+
+
+        const tagOK=
+
+            filter==="ALL" ||
+
+            x[0]===filter;
+
+
+        const searchOK=
+
+            !search ||
+
+            x[0].toLowerCase().includes(search) ||
+
+            x[1].toLowerCase().includes(search) ||
+
+            x[2].toLowerCase().includes(search) ||
+
+            x[3].toLowerCase().includes(search);
+
+
+        if(!tagOK || !searchOK)
+            continue;
+
+
+        html+=
+
+        '<div class="line '+
+
+        (selected.has(i)?"selected":"")+
+
+        '" data-i="'+i+'">'+
+
+
+        '<div class="num" '+
+
+        'onclick="toggle('+i+')">'+
+
+        String(
+
+            x[4] ||
+
+            i+1
+
+        ).padStart(4,"0")+
+
+        '</div>'+
+
+
+        '<div class="content">'+
+
+
+        '<span class="tag '+
+
+        esc(x[0])+
+
+        '">'+
+
+        esc(x[0])+
+
+        '</span>'+
+
+
+        '<span class="time">['+
+
+        esc(x[1])+
+
+        ']</span>'+
+
+
+        '<span class="source">['+
+
+        esc(x[2])+
+
+        ']</span>'+
+
+
+        clickable(x[3])+
+
+
+        '</div>'+
+
+
+        '</div>';
+
+    }
+
+
+    document.getElementById("logger").innerHTML=
+
+        html ||
+
+        '<div style="padding:30px;text-align:center;color:#71808f">'+
+
+        'NO LOG DATA'+
+
+        '</div>';
+}
+
+
+function toggle(i){
+
+    if(selected.has(i))
+        selected.delete(i);
+
+    else
+        selected.add(i);
+
+    draw();
+}
+
+
+function selectLast(){
+
+    selected.clear();
+
+    if(logs.length)
+        selected.add(logs.length-1);
+
+    draw();
+}
+
+
+function clearSelected(){
+
+    selected.clear();
+
+    draw();
+}
+
+
+function format(i){
+
+    const x=logs[i];
+
+    return(
+
+        String(x[4] || i+1).padStart(4,"0")+
+
+        " ["+x[1]+"]"+
+
+        " ["+x[0]+"]"+
+
+        " ["+x[2]+"] "+
+
+        x[3]
+
+    );
+}
+
+
+function selectedText(){
+
+    return [...selected]
+
+        .sort((a,b)=>a-b)
+
+        .map(format)
+
+        .join("\n");
+}
+
+
+async function copy(text){
+
+    try{
+
+        await navigator.clipboard.writeText(text);
+
+    }catch(e){
+
+        const t=
+            document.createElement("textarea");
+
+        t.value=text;
+
+        document.body.appendChild(t);
+
+        t.select();
+
+        document.execCommand("copy");
+
+        t.remove();
+    }
+
+    status("COPIED");
+}
+
+
+function copySelected(){
+
+    if(!selected.size){
+
+        status("NO LINE SELECTED");
+
+        return;
+    }
+
+    copy(selectedText());
+}
+
+
+function copyLast(){
+
+    if(!logs.length){
+
+        status("NO LOG");
+
+        return;
+    }
+
+
+    let n=parseInt(
+
+        document.getElementById("lastCount").value,
+
+        10
+
+    );
+
+
+    if(!Number.isFinite(n) || n<1)
+        n=1;
+
+
+    n=Math.min(n,logs.length);
+
+
+    const start=logs.length-n;
+
+
+    const text=[];
+
+
+    for(let i=start;i<logs.length;i++)
+        text.push(format(i));
+
+
+    copy(text.join("\n"));
+
+
+    status(
+        "COPIED LAST "+n+" LINES"
+    );
+}
+
+
+function copyAll(){
+
+    copy(
+
+        logs
+            .map(format)
+            .join("\n")
+
+    );
+}
+
+
+function reloadLog(){
+
+    loadLog();
+
+    status("RELOADING");
+}
+
+
+function bottom(){
+
+    window.scrollTo(
+
+        0,
+
+        document.body.scrollHeight
+
+    );
+}
+
+
+function status(text){
+
+    const s=
+        document.getElementById("status");
+
+    s.textContent=text;
+
+    s.style.display="block";
+
+
+    clearTimeout(status.timer);
+
+
+    status.timer=setTimeout(
+
+        ()=>{
+
+            s.style.display="none";
+
+        },
+
+        1500
+
+    );
+}
+
+
+loadLog();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,15 @@
+*.jks
+*.keystore
+local.properties
+
+.gradle/
+build/
+**/build/
+
+.idea/
+*.iml
+.externalNativeBuild/
+.cxx/
+captures/
+
+!Oren-v1.apk
