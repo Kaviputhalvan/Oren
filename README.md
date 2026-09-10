@@ -49,13 +49,6 @@ The source code is available on GitHub:
 GitHub:
 https://github.com/Kaviputhalvan/Oren
 
-Source Code
-
-https://drive.google.com/file/d/1gzGzJUdOiNQ8IsBF7qu6L43aCwWSTVkO/view?usp=drivesdk
-
-APK
-
-https://drive.google.com/file/d/1FSsocTicrK2Nx57YtfM1o1Zmj-wnPjIZ/view?usp=drivesdk
 
 Tested Device
 
