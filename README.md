@@ -173,20 +173,21 @@ Oren-V1-P6.apk
 
 ---
 
-Version History
+## Version History
 
-Build| Type| Main Change
-"Oren-V1.apk"| Initial| Unsigned APK
-"Oren-V1-signed.apk"| Signed| First signed APK
-"Oren-V1-P1.apk"| P1| Dummy patch
-"Oren-V1-P2.apk"| P2| Close-by Tile Service
-"Oren-V1-P3.apk"| P3| System Settings Service breaker
-"Oren-V1-P4.apk"| P4| Service breaker on popup close
-"Oren-V1-P5.apk"| P5| UI/UX stability
-"Oren-V1-P5.1.apk"| P5.1 Test 1| RP/RL position change
-"Oren-V1-P5.2.apk"| P5.2 Test 2| RP/RL position change
-"Oren-V1-P5.3.apk"| P5.3 Test 3| RP/RL stability finalized
-"Oren-V1-P6.apk"| P6| "dataSync" → "specialUse"
+| Build | Type | Main Change |
+|---|---|---|
+| `Oren-V1.apk` | Initial | Unsigned APK |
+| `Oren-V1-signed.apk` | Signed | First signed APK |
+| `Oren-V1-P1.apk` | P1 | Dummy patch |
+| `Oren-V1-P2.apk` | P2 | Close-by Tile Service |
+| `Oren-V1-P3.apk` | P3 | System Settings Service breaker |
+| `Oren-V1-P4.apk` | P4 | Service breaker on popup close |
+| `Oren-V1-P5.apk` | P5 | UI/UX stability |
+| `Oren-V1-P5.1.apk` | P5.1 Test 1 | RP/RL position change |
+| `Oren-V1-P5.2.apk` | P5.2 Test 2 | RP/RL position change |
+| `Oren-V1-P5.3.apk` | P5.3 Test 3 | RP/RL stability finalized |
+| `Oren-V1-P6.apk` | P6 | `dataSync` → `specialUse` |
 
 Current Patch
 
