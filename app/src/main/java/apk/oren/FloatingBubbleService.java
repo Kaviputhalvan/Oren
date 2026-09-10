@@ -8,6 +8,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.net.Uri;
+import android.content.pm.ServiceInfo;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -124,24 +125,34 @@ public class FloatingBubbleService extends Service {
     @Override
     public void onCreate() {
 
-        super.onCreate();
+	super.onCreate();
 
-        createNotificationChannel();
+	createNotificationChannel();
 
-        if (Build.VERSION.SDK_INT >=
-                Build.VERSION_CODES.O) {
-            startForeground(
-                    NOTIFICATION_ID,
-                    createNotification()
-            );
-        }
+	Notification notification = createNotification();
 
-        LoggerService.info(
-                this,
-                LOG_SOURCE,
-                "Service created"
-        );
-    }
+	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+
+		startForeground(
+			NOTIFICATION_ID,
+			notification,
+			ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+		);
+
+	} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+		startForeground(
+			NOTIFICATION_ID,
+			notification
+		);
+	}
+
+	LoggerService.info(
+		this,
+		LOG_SOURCE,
+		"Service created"
+	);
+}
 
     private Notification createNotification() {
 
@@ -411,15 +422,16 @@ public class FloatingBubbleService extends Service {
                             33
                     );
 
-            imgBubbleRp =
-                    createBubbleView(
-                            R.drawable.bubble_rp,
-                            33
-                    );
 
             imgBubbleRl =
                     createBubbleView(
                             R.drawable.bubble_rl,
+                            33
+                    );
+					
+					imgBubbleRp =
+                    createBubbleView(
+                            R.drawable.bubble_rp,
                             33
                     );
 
@@ -431,12 +443,13 @@ public class FloatingBubbleService extends Service {
                     imgBubbleL
             );
 
-            containerLayout.addView(
-                    imgBubbleRp
-            );
 
             containerLayout.addView(
                     imgBubbleRl
+            );
+			
+			containerLayout.addView(
+                    imgBubbleRp
             );
 
             containerLayout.addView(
@@ -477,20 +490,7 @@ public class FloatingBubbleService extends Service {
                     }
             );
 
-            imgBubbleRp.setOnClickListener(
-                    v -> {
-
-                        LoggerService.info(
-                                this,
-                                LOG_SOURCE,
-                                "Reverse portrait bubble clicked"
-                        );
-
-                        resetInactivityTimers();
-
-                        onBubbleRpClick();
-                    }
-            );
+            
 
             imgBubbleRl.setOnClickListener(
                     v -> {
@@ -506,6 +506,21 @@ public class FloatingBubbleService extends Service {
                         onBubbleRlClick();
                     }
             );
+			imgBubbleRp.setOnClickListener(
+                    v -> {
+
+                        LoggerService.info(
+                                this,
+                                LOG_SOURCE,
+                                "Reverse portrait bubble clicked"
+                        );
+
+                        resetInactivityTimers();
+
+                        onBubbleRpClick();
+                    }
+            );
+			
 
             windowManager.addView(
                     containerLayout,
@@ -705,6 +720,13 @@ public class FloatingBubbleService extends Service {
                                     );
 
                                     destroyBubble();
+									stopService(
+    new Intent(
+        FloatingBubbleService.this,
+        SystemSettingsService.class
+    )
+);
+									enableAutoRotation();
 
                                 } else if (clickDuration
                                         < CLICK_MAX_TIME) {
@@ -766,6 +788,33 @@ public class FloatingBubbleService extends Service {
     );
 }
 
+private void enableAutoRotation() {
+
+        try {
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+        && !Settings.System.canWrite(this)) {
+
+    Intent intent = new Intent(
+            Settings.ACTION_MANAGE_WRITE_SETTINGS,
+            Uri.parse("package:" + getPackageName())
+    );
+
+    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    startActivity(intent);
+
+    return;
+}
+
+            Settings.System.putInt(
+                    getContentResolver(),
+                    Settings.System.ACCELEROMETER_ROTATION,
+                    1
+            );
+
+        } catch (Exception ignored) {
+        }
+    }
 private void destroyBubble() {
 
     try {
@@ -845,14 +894,16 @@ private void destroyBubble() {
 
         showChildBubble(
                 imgBubbleRp,
-                dpToPx(73),
-                0
+				0,
+                dpToPx(73)
+                
         );
 
         showChildBubble(
                 imgBubbleRl,
-                0,
-                dpToPx(73)
+               
+                dpToPx(73),
+				0
         );
 
         resetInactivityTimers();
@@ -893,8 +944,9 @@ private void destroyBubble() {
 
         resetChildBubble(imgBubbleP);
         resetChildBubble(imgBubbleL);
-        resetChildBubble(imgBubbleRp);
+        
         resetChildBubble(imgBubbleRl);
+		resetChildBubble(imgBubbleRp);
 
         handler.postDelayed(
                 new Runnable() {
@@ -1023,8 +1075,8 @@ private void destroyBubble() {
         ImageView[] views = {
                 imgBubbleP,
                 imgBubbleL,
-                imgBubbleRp,
-                imgBubbleRl
+                imgBubbleRl,
+				imgBubbleRp
         };
 
         for (ImageView view : views) {

@@ -1,92 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+	<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+	<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+	<uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
-    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
+	<uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
 
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+	<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+	<uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
 
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-	
+	<uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
 
-    <application
-        android:allowBackup="true"
-        android:icon="@drawable/iconcfg"
-        android:label="Oren"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
-        <activity
-            android:name=".MainActivity"
-            android:exported="true">
+	<application
+		android:allowBackup="true"
+		android:icon="@drawable/iconcfg"
+		android:label="Oren"
+		android:supportsRtl="true"
+		android:theme="@style/AppTheme">
 
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
-        </activity>
-
-        <activity
-            android:name=".WebLoggerActivity"
-            android:exported="false" />
-			
 		<activity
-		    android:name=".AboutActivity"
-		    android:exported="false" />
-			
+			android:name=".MainActivity"
+			android:exported="true">
+
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+
+		</activity>
+
 		<activity
-		    android:name=".HelpActivity"
+			android:name=".WebLoggerActivity"
 			android:exported="false" />
 
-        <service
-            android:name=".LoggerService"
-            android:enabled="true"
-            android:exported="false"
-            android:foregroundServiceType="dataSync" />
+		<activity
+			android:name=".AboutActivity"
+			android:exported="false" />
 
-        <service
-            android:name=".FloatingBubbleService"
-            android:enabled="true"
-            android:exported="false"
-            android:foregroundServiceType="dataSync" />
+		<activity
+			android:name=".HelpActivity"
+			android:exported="false" />
 
-        <service
-            android:name=".SystemSettingsService"
-            android:enabled="true"
-            android:exported="false" />
+		<service
+			android:name=".LoggerService"
+			android:enabled="true"
+			android:exported="false"
+			android:foregroundServiceType="dataSync" />
 
-        <service
-            android:name=".OrentTileService"
-            android:label="ORENT"
-            android:icon="@drawable/bubble_base"
-            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
-            android:exported="true">
+		<service
+			android:name=".FloatingBubbleService"
+			android:enabled="true"
+			android:exported="false"
+			android:foregroundServiceType="specialUse">
 
-            <intent-filter>
-                <action android:name="android.service.quicksettings.action.QS_TILE" />
-            </intent-filter>
+			<property
+				android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+				android:value="Persistent floating overlay bubble for device orientation controls" />
 
-        </service>
+		</service>
 
-        <receiver
-            android:name=".BootReceiver"
-            android:enabled="true"
-            android:exported="false">
+		<service
+			android:name=".SystemSettingsService"
+			android:enabled="true"
+			android:exported="false" />
 
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
+		<service
+			android:name=".OrentTileService"
+			android:label="OREN"
+			android:icon="@drawable/bubble_base"
+			android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+			android:exported="true">
 
-        </receiver>
+			<intent-filter>
+				<action android:name="android.service.quicksettings.action.QS_TILE" />
+			</intent-filter>
 
-    </application>
+		</service>
+
+		<receiver
+			android:name=".BootReceiver"
+			android:enabled="true"
+			android:exported="false">
+
+			<intent-filter>
+				<action android:name="android.intent.action.BOOT_COMPLETED" />
+			</intent-filter>
+
+		</receiver>
+
+	</application>
 
 </manifest>
